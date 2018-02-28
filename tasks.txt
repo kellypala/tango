@@ -10,7 +10,7 @@ TANGO API - TODO
  <<<< DONE - Update a user (fully or partially)
 *In progress - Create an issue
 - The issue must belong to one user
-- Retrieve an issue
+<<<< DONE - Retrieve an issue
 <<<< DONE - Retrieve the list of issues
 - The client must also be able to retrieve the list of issues that belong to a specific user
 - Bonus: the list is paginated
