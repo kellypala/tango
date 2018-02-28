@@ -27,9 +27,10 @@ const issueSchema = new Schema({
   tags: [{
     type: String
   }],
-  /*user: [
-      userSchema
-  ],*/
+  user: {
+    type: Schema.Types.ObjectId,
+    required: true
+  },
   createdAt: {
     type: Date,
     default: Date.now
