@@ -20,7 +20,7 @@ const userSchema = new Schema({
     enum: ['citizen', 'manager'],
     default: 'citizen'
   },
-  firstName: {
+  createdAt: {
     type: Date,
     required: true,
     default: Date.now
