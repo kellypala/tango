@@ -27,9 +27,9 @@ const issueSchema = new Schema({
   tags: [{
     type: String
   }],
-  user: {
-    
-  },
+  user: [
+    userSchema
+  ],
   createdAt: {
     type: Date,
     default: Date.now
