@@ -48,9 +48,38 @@
      });
    });
 
+   router.put('/:id', function(req, res, next){
+     User.findById(req.params.id).exec(function(err, userToModify) {
+       if (err) {
+          //return console.warn('Could not count people because: ' + err.message);
+         return next(err);
+       }
+       //res.send("celui à modifier " + userToModify.lastName);
+       //res.send("Celui par lequel on modifie" + req.body.lastName);
+       if(req.body.firstName != undefined){
+         userToModify.firstName = req.body.firstName;
+       }
+       if(req.body.lastName != undefined){
+         userToModify.lastName = req.body.lastName;
+       }
+       if(req.body.role != undefined){
+         userToModify.role = req.body.role;
+       }
+       //res.send(userToModify.lastName);
+       userToModify.save(function(err, savedUser) {
+         if (err) {
+           return next(err);
+         }
+         // Send the saved document in the response
+         res.send(savedUser);
+       });
+
+     });
+   });
+
    router.delete('/:id', function(req, res, next){
      const user_id = req.params.id;
-    User.findById(user_id).remove().exec(function(err, users){
+    User.findById(user_id).remove().exec(function(err, userToDelete){
       if(err){
         return next(err);
       }
