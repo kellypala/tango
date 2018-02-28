@@ -24,6 +24,16 @@ router.get('/', function(req, res, next) {
     });
 });
 
+router.get('/:id', function(req, res, next){
+  Issue.findById(req.params.id).exec(function(err, issues) {
+    if (err) {
+       //return console.warn('Could not count people because: ' + err.message);
+      return next(err);
+    }
+    res.send(issues);
+  });
+});
+
 /* POST new user */
 router.post('/', function(req, res, next) {
     // Create a new document from the JSON in the request body

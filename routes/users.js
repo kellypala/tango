@@ -14,7 +14,7 @@
    * @apiSuccess {String} lastName  Last name of the user
    */
    router.get('/', function(req, res, next) {
-     User.find().sort('name').exec(function(err, users) {
+     User.find().sort('lastName').exec(function(err, users) {
        if (err) {
          return next(err);
        }
@@ -54,7 +54,7 @@
       if(err){
         return next(err);
       }
-      res.send("User " + user_id + " deleted.");
+      res.send("User " + user_id + " deleted. ");
     });
    });
 
