@@ -38,4 +38,14 @@ router.post('/', function(req, res, next) {
     });
 });
 
+router.delete('/:id', function(req, res, next){
+    const issue_id = req.params.id;
+    Issue.findById(issue_id).remove().exec(function(err, issues){
+        if(err){
+            return next(err);
+        }
+        res.send("Issue " + issue_id + " deleted.");
+    });
+});
+
 module.exports = router;
