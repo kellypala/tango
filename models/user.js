@@ -11,8 +11,8 @@ const userSchema = new Schema({
   lastName: {
     type: String,
     required: true,
-    minlength: [2, 'Firstname is too short'],
-    maxlength: [20, 'Firstname is too long']
+    minlength: [2, 'lastName is too short'],
+    maxlength: [20, 'lastName is too long']
   },
   role: {
     type: String,

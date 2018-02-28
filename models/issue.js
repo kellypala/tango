@@ -12,7 +12,7 @@ const issueSchema = new Schema({
     type: String,
     maxlength: [1000, 'Description must have 1000 characters max']
   },
-  imageUrl{
+  imageUrl: {
     type: String,
     maxlength: [500, 'Url must have 500 characters max']
   },
@@ -27,9 +27,9 @@ const issueSchema = new Schema({
   tags: [{
     type: String
   }],
-  user: [
-    userSchema
-  ],
+  /*user: [
+      userSchema
+  ],*/
   createdAt: {
     type: Date,
     default: Date.now
