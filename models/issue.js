@@ -29,7 +29,10 @@ const issueSchema = new Schema({
   }],
   user: {
     type: Schema.Types.ObjectId,
-    required: true
+    required: true,
+    validate: {
+      validator: existUser
+    }
   },
   createdAt: {
     type: Date,
@@ -39,5 +42,18 @@ const issueSchema = new Schema({
     type: Date
   }
 });
+
+// Validation si le user exite
+
+function existUser(value, callback){
+  User.findOne({ '_id': value }, function (err,user){
+    if(user){
+      callback(true);
+    } else {
+      callback(false);
+    }
+  });
+}
+
 // Create the model from the schema and export it
 module.exports = mongoose.model('Issue', issueSchema);
