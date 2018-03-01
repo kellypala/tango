@@ -2,11 +2,27 @@ var express = require('express');
 var router = express.Router();
 const Issue = require('../models/issue');
 
-
+/* GET users listing. */
+/**
+* @api {get} /users/:id Request a user's information
+* @apiName GetUser
+* @apiGroup User
+*
+* @apiParam {Number} id Unique identifier of the user
+*
+* @apiSuccess {String} firstName First name of the user
+* @apiSuccess {String} lastName  Last name of the user
+*/
 router.get('/', function(req, res, next) {
 
   Issue.find().count(function(err, total) {
     let query = Issue.find().sort('status');
+
+    // Filter issues by status
+    let statusList = ['new', 'inProgress', 'canceled', 'completed'];
+      if (statusList.includes(req.query.status)) {
+        query = query.where('status').equals(req.query.status);
+      }
 
     // Parse the "page" param (default to 1 if invalid)
     let page = parseInt(req.query.page,10);
