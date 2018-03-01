@@ -3,18 +3,6 @@ var router = express.Router();
 const Issue = require('../models/issue');
 
 
-/* GET users listing. */
-/**
-* @api {get} /users/:id Request a user's information
-* @apiName GetUser
-* @apiGroup User
-*
-* @apiParam {Number} id Unique identifier of the user
-*
-* @apiSuccess {String} firstName First name of the user
-* @apiSuccess {String} lastName  Last name of the user
-*/
-
 router.get('/', function(req, res, next) {
 
   Issue.find().count(function(err, total) {
@@ -92,8 +80,11 @@ router.put('/:id', function(req, res, next){
             return next(err);
         }
 
+        // On dit qu'il n'est pas possible de modifier le User
         if(req.body.user !== undefined){
-            issueToModify.user = req.body.user;
+            //issueToModify.user = req.body.user;
+
+            // HANDLE THE ERROR -> impossible de changer de user
         }
         if(req.body.description !== undefined){
             issueToModify.description = req.body.description;
@@ -141,7 +132,7 @@ router.put('/:id', function(req, res, next){
         if(req.body.status !== undefined) {
             // Si le statut demandé est le même que l'actuel
             if (req.body.status === issueToModify.status) {
-                res.send("This issue status is already " + issueToModify.status);
+                //res.send("This issue status is already " + issueToModify.status);
             } else {
                 // Ici, nous allons gérer le statut de l'issue
                 switch (req.body.status) {
@@ -193,7 +184,7 @@ router.put('/:id', function(req, res, next){
 });
 
 
-router.delete('/:id', loadIssueFromParamsMiddleware, function(req, res, next){
+router.delete('/:id', /*loadIssueFromParamsMiddleware,*/ function(req, res, next){
     const issue_id = req.params.id;
     Issue.findById(issue_id).remove().exec(function(err, issues){
         if(err){

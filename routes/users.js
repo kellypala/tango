@@ -38,12 +38,13 @@
            const usersJson = listUsers.map(user => user.toJSON());
 
            listIssues.forEach(function(result) {
+               console.log(result);
              const resultId = result._id.toString();
              const correspondingUser = usersJson.find(user => user._id == resultId);
              correspondingUser.directedIssuesCount = result.issuesCount;
            });
             res.send(usersJson);
-              })
+            })
           });
      });
 
