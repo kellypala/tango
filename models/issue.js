@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
+const User = require("./user");
 // Define the schema for users
 const issueSchema = new Schema({
   status: {
@@ -31,7 +32,8 @@ const issueSchema = new Schema({
     type: Schema.Types.ObjectId,
     required: true,
     validate: {
-      validator: existUser
+      validator: existUser,
+      isAsync: true
     }
   },
   createdAt: {
@@ -46,7 +48,7 @@ const issueSchema = new Schema({
 // Validation si le user exite
 
 function existUser(value, callback){
-  User.findOne({ '_id': value }, function (err,user){
+  User.findOne({ '_id': value }, function (err, user){
     if(user){
       callback(true);
     } else {

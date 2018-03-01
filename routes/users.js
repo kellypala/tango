@@ -19,8 +19,32 @@
        if (err) {
          return next(err);
        }
-       res.send(users);
+       Issue.aggregate([
+     {
+       $group: { // Group the documents by users ID
+         _id: '$user',
+         issuesCount: { // Count the number of issues for that ID
+           $sum: 1
+         }
+       }
+     }
+   ],function(err, results){
+     if (err) {
+       return next(err);
+     }
+     const listUsers = users;
+     const listIssues = results;
+
+     const usersJson = listUsers.map(user => user.toJSON());
+
+     listIssues.forEach(function(result) {
+       const resultId = result._id.toString();
+       const correspondingUser = usersJson.find(user => user._id == resultId);
+       correspondingUser.directedIssuesCount = result.issuesCount;
      });
+     res.send(usersJson);
+   })
+        });
    });
 
 
