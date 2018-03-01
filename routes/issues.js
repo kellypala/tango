@@ -1,10 +1,6 @@
 var express = require('express');
 var router = express.Router();
 const Issue = require('../models/issue');
-const mongoose = require('mongoose');
-const ObjectId = mongoose.Types.ObjectId;
-
-
 
 /* GET users listing. */
 /**
