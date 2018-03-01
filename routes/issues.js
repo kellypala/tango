@@ -28,8 +28,8 @@ router.get('/', function(req, res, next) {
 
     // Parse the "pageSize" param (default to 100 if invalid)
     let pageSize = parseInt(req.query.pageSize, 10);
-    if(isNaN(pageSize)|| pageSize < 0 || pageSize > 100){
-      page = 100;
+    if(isNaN(pageSize)|| pageSize < 0 || pageSize > 10){
+      pageSize = 10;
     }
 
     // Apply skip and limit to select the correct page of elements
