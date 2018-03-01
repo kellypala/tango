@@ -162,7 +162,8 @@ router.put('/:id', function(req, res, next){
     });
 });
 
-router.delete('/:id', function(req, res, next){
+
+router.delete('/:id', loadIssueFromParamsMiddleware, function(req, res, next){
     const issue_id = req.params.id;
     Issue.findById(issue_id).remove().exec(function(err, issues){
         if(err){
@@ -171,5 +172,24 @@ router.delete('/:id', function(req, res, next){
         res.send("Issue " + issue_id + " deleted.");
     });
 });
+
+function loadIssueFromParamsMiddleware(req, res, next) {
+
+  const issueId = req.params.id;
+  if (!ObjectId.isValid(issueId)) {
+    return issueNotFound(res, issueId);
+  }
+  let query = Issue.findById(issueId)
+  query.exec(function(err, issue) {
+    if (err) {
+      return next(err);
+    } else if (!issue) {
+      return issueNotFound(res, issueId);
+    }
+
+    req.issue = issue;
+    next();
+  });
+}
 
 module.exports = router;

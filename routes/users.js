@@ -1,6 +1,7 @@
   var express = require('express');
   var router = express.Router();
   const User = require('../models/user');
+  const Issue = require('../models/issue');
 
   /* GET users listing. */
   /**
@@ -18,8 +19,32 @@
        if (err) {
          return next(err);
        }
-       res.send(users);
+       Issue.aggregate([
+     {
+       $group: { // Group the documents by users ID
+         _id: '$user',
+         issuesCount: { // Count the number of issues for that ID
+           $sum: 1
+         }
+       }
+     }
+   ],function(err, results){
+     if (err) {
+       return next(err);
+     }
+     const listUsers = users;
+     const listIssues = results;
+
+     const usersJson = listUsers.map(user => user.toJSON());
+
+     listIssues.forEach(function(result) {
+       const resultId = result._id.toString();
+       const correspondingUser = usersJson.find(user => user._id == resultId);
+       correspondingUser.directedIssuesCount = result.issuesCount;
      });
+     res.send(usersJson);
+   })
+        });
    });
 
 
@@ -38,7 +63,7 @@
      });
    });
 
-   router.get('/:id', function(req, res, next){
+   router.get('/:id', loadUserFromParamsMiddleware, function(req, res, next){
      User.findById(req.params.id).exec(function(err, users) {
        if (err) {
           //return console.warn('Could not count people because: ' + err.message);
@@ -48,7 +73,7 @@
      });
    });
 
-   router.put('/:id', function(req, res, next){
+   router.put('/:id', loadUserFromParamsMiddleware, function(req, res, next){
      User.findById(req.params.id).exec(function(err, userToModify) {
        if (err) {
           //return console.warn('Could not count people because: ' + err.message);
@@ -86,5 +111,30 @@
       res.send("User " + user_id + " deleted. ");
     });
    });
+
+   function loadUserFromParamsMiddleware(req, res, next) {
+
+     const userId = req.params.id;
+     if (!ObjectId.isValid(userId)) {
+       return userNotFound(res, userId);
+     }
+
+     let query = User.findById(userId)
+
+     query.exec(function(err, user) {
+       if (err) {
+         return next(err);
+       } else if (!user) {
+         return userNotFound(res, userId);
+       }
+
+       req.user = user;
+       next();
+     });
+   }
+
+   function userNotFound(res, userId) {
+     return res.status(404).type('text').send(`No user found with ID ${userId}`);
+   }
 
   module.exports = router;
