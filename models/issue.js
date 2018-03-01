@@ -31,6 +31,7 @@ const issueSchema = new Schema({
     type: Schema.Types.ObjectId,
     required: true
   },
+  /*
   createdAt: {
     type: Date,
     default: Date.now
@@ -38,6 +39,10 @@ const issueSchema = new Schema({
   updatedAt: {
     type: Date
   }
+  */
+},
+{
+    timestamps: true
 });
 // Create the model from the schema and export it
 module.exports = mongoose.model('Issue', issueSchema);

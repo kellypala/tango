@@ -56,13 +56,13 @@
        }
        //res.send("celui à modifier " + userToModify.lastName);
        //res.send("Celui par lequel on modifie" + req.body.lastName);
-       if(req.body.firstName != undefined){
+       if(req.body.firstName !== undefined){
          userToModify.firstName = req.body.firstName;
        }
-       if(req.body.lastName != undefined){
+       if(req.body.lastName !== undefined){
          userToModify.lastName = req.body.lastName;
        }
-       if(req.body.role != undefined){
+       if(req.body.role !== undefined){
          userToModify.role = req.body.role;
        }
        //res.send(userToModify.lastName);
