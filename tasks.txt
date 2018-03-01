@@ -12,7 +12,7 @@
 <<<< DONE - The issue must belong to one user
 <<<< DONE - Retrieve an issue
 <<<< DONE - Retrieve the list of issues
-- The client must also be able to retrieve the list of issues that belong to a specific user
+*In progress - The client must also be able to retrieve the list of issues that belong to a specific user
 - Bonus: the list is paginated
 - Bonus: there is at least 1 filter
 <<<< DONE - Update an issue (fully or partially)
@@ -20,3 +20,6 @@
 
 NOUS EN PLUS:
 - Personnalize error messages
+- Commenter le code
+*In Progress - Pagination
+- Faire les middleware

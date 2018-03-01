@@ -36,6 +36,7 @@ const issueSchema = new Schema({
       isAsync: true
     }
   },
+  /*
   createdAt: {
     type: Date,
     default: Date.now
@@ -43,6 +44,10 @@ const issueSchema = new Schema({
   updatedAt: {
     type: Date
   }
+  */
+},
+{
+    timestamps: true
 });
 
 // Validation si le user exite
