@@ -1,4 +1,4 @@
-TANGO API - TODO
+﻿TANGO API - TODO
 
 ÉNONCÉ:
 
@@ -6,16 +6,16 @@ TANGO API - TODO
 <<<< DONE - Retrieve a user
      On peut implémenter, en bonus, retrieve par nom une liste si y'a plusieurs personnes avec ce nom, ou par prénom, à voir?
 <<<< DONE - Optional: Retrieve the list of users
-- Bonus: the response indicates how many issues each user has created (using aggregation)
- <<<< DONE - Update a user (fully or partially)
+<<<< DONE - Bonus: the response indicates how many issues each user has created (using aggregation)
+<<<< DONE - Update a user (fully or partially)
 *In progress - Create an issue
-- The issue must belong to one user
+<<<< DONE - The issue must belong to one user
 <<<< DONE - Retrieve an issue
 <<<< DONE - Retrieve the list of issues
 - The client must also be able to retrieve the list of issues that belong to a specific user
 - Bonus: the list is paginated
 - Bonus: there is at least 1 filter
-- Update an issue (fully or partially)
+<<<< DONE - Update an issue (fully or partially)
 <<<< DONE - Delete an issue
 
 NOUS EN PLUS:
