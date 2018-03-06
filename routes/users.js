@@ -64,78 +64,55 @@
      });
    });
 
-   router.get('/:id', loadUserFromParamsMiddleware, function(req, res, next){
-     User.findById(req.params.id).exec(function(err, users) {
-       if (err) {
-          //return console.warn('Could not count people because: ' + err.message);
-         return next(err);
-       }
-       res.send(users);
-     });
+   router.get('/:id', loadUserFromParams, function(req, res, next){
+     res.send(req.user);
    });
 
-   router.put('/:id', loadUserFromParamsMiddleware, function(req, res, next){
-     User.findById(req.params.id).exec(function(err, userToModify) {
-       if (err) {
-          //return console.warn('Could not count people because: ' + err.message);
-         return next(err);
-       }
-       //res.send("celui à modifier " + userToModify.lastName);
-       //res.send("Celui par lequel on modifie" + req.body.lastName);
+   router.put('/:id', loadUserFromParams, function(req, res, next){
        if(req.body.firstName !== undefined){
-         userToModify.firstName = req.body.firstName;
+         req.user.firstName = req.body.firstName;
        }
        if(req.body.lastName !== undefined){
-         userToModify.lastName = req.body.lastName;
+         req.user.lastName = req.body.lastName;
        }
        if(req.body.role !== undefined){
-         userToModify.role = req.body.role;
+         req.user.role = req.body.role;
        }
        //res.send(userToModify.lastName);
-       userToModify.save(function(err, savedUser) {
+       req.user.save(function(err, updatedUser) {
          if (err) {
            return next(err);
          }
          // Send the saved document in the response
-         res.send(savedUser);
+         res.send(updatedUser);
        });
-
-     });
    });
 
-   router.delete('/:id', function(req, res, next){
-     const user_id = req.params.id;
-    User.findById(user_id).remove().exec(function(err, userToDelete){
+   router.delete('/:id', loadUserFromParams, function(req, res, next){
+    req.user.remove(function(err){
       if(err){
         return next(err);
       }
-      res.send("User " + user_id + " deleted. ");
+      res.send("User " + req.user.id + " deleted. ");
     });
    });
 
-   function loadUserFromParamsMiddleware(req, res, next) {
 
-     const userId = req.params.id;
-     if (!ObjectId.isValid(userId)) {
-       return userNotFound(res, userId);
-     }
+   function userNotFound(res, userId) {
+     return res.status(404).type('text').send(`No user found with ID ${userId}`);
+   }
 
-     let query = User.findById(userId)
-
-     query.exec(function(err, user) {
+   function loadUserFromParams(req, res, next) {
+     User.findById(req.params.id).exec(function(err, user) {
        if (err) {
          return next(err);
        } else if (!user) {
-         return userNotFound(res, userId);
+         return res.status(404).send('No user found with ID ' + req.params.id);
        }
-
        req.user = user;
        next();
      });
    }
 
-   function userNotFound(res, userId) {
-     return res.status(404).type('text').send(`No user found with ID ${userId}`);
-   }
 
   module.exports = router;
