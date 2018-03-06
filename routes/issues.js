@@ -137,14 +137,14 @@ router.put('/:id', loadIssueFromParams, function(req, res, next){
         */
         if(req.body.status !== undefined) {
             // Si le statut demandé est le même que l'actuel
-            if (req.body.status === issueToModify.status) {
+            if (req.body.status === req.issue.status) {
                 //res.send("This issue status is already " + issueToModify.status);
             } else {
                 // Ici, nous allons gérer le statut de l'issue
                 switch (req.body.status) {
                     case "new":
                         //------ PAS VRAIMENT UTILE CE CASE
-                        if (req.issue.status === "inProgress" || req.user.status === "canceled" || req.user.status === "completed") {
+                        if (req.issue.status === "inProgress" || req.issue.status === "canceled" || req.issue.status === "completed") {
                             // HANDLE ERROR
                         } else { // Peut passer à New que si il
                             req.issue.status = req.body.status;
@@ -165,7 +165,8 @@ router.put('/:id', loadIssueFromParams, function(req, res, next){
                         }
                         break;
                     case "completed":
-                        if (req.issue.status === "completed" || req.user.status === "canceled" || req.user.status === 'new' ) {
+
+                        if (req.issue.status === "completed" || req.issue.status === "canceled" || req.issue.status === 'new' ) {
                             // HANDLE ERROR
                         } else { // Peut passer en completed que si l'état était inProgress
                             req.issue.status = req.body.status;
@@ -203,6 +204,7 @@ function loadIssueFromParams(req, res, next) {
     if (err) {
       return next(err);
     } else if (!issue) {
+      res.send("ici");
       return res.status(404).send('No issue found with ID ' + req.params.id);
     }
     req.issue = issue;
