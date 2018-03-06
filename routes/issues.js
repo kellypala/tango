@@ -204,7 +204,6 @@ function loadIssueFromParams(req, res, next) {
     if (err) {
       return next(err);
     } else if (!issue) {
-      res.send("ici");
       return res.status(404).send('No issue found with ID ' + req.params.id);
     }
     req.issue = issue;

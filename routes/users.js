@@ -57,6 +57,9 @@
      // Save that document
      newUser.save(function(err, savedUser) {
        if (err) {
+         if(err.name = "BulkWriteError"){
+           res.status(422).send(" L'utilisateur " + req.body.firstName +" "+ req.body.lastName + " existe déjà !")
+         }
          return next(err);
        }
        // Send the saved document in the response
@@ -93,14 +96,16 @@
       if(err){
         return next(err);
       }
-      res.send("User " + req.user.id + " deleted. ");
+      res.status(200).send("User " + req.user.id + " deleted. ");
     });
    });
 
    function loadUserFromParams(req, res, next) {
      User.findById(req.params.id).exec(function(err, user) {
        if (err) {
-         return next(err);
+         if(err.name = "CastError"){
+           return res.status(422).send("L'utilisateur avec cet id n'existe pas !");
+         }
        } else if (!user) {
          return res.status(404).send('No user found with ID ' + req.params.id);
        }
