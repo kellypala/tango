@@ -100,25 +100,25 @@ router.put('/:id', loadIssueFromParams, function(req, res, next){
         }
 
         /*
-        // GERER LE STATUT DE L'ISSUE
+        // gérer LE STATUT DE L'ISSUE
         switch(issueToModify.status){
-            case "new": res.send('aloooohaaaaaa');
+            case "new": res.send('bjr');
                 if(req.body.status == "inProgress" || req.body.status == "canceled" || req.body.status == "completed"){
                     res.send('Impossible to go back to the status: new');
                 }
             issueToModify.status = req.body.status;
                 break;
-            case "inProgress": res.send('lololol');
+            case "inProgress": res.send('de');
                 if(req.body.status == "canceled" || req.body.status == "completed"){
                     res.send('Impossible to go back to the status: inProgress');
                 }
                 break;
-            case "canceled": res.send('lololol');
+            case "canceled": res.send('de');
                 if(req.body.status == "completed"){
                     res.send('Impossible to go back to the status: canceled');
                 }
                 break;
-            case "completed": res.send('lololol');
+            case "completed": res.send('de');
                 if(req.body.status == "completed"){
                     res.send('Impossible to go back to the status: canceled');
                 }
