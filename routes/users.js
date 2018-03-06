@@ -67,7 +67,7 @@
          return next(err);
        }
        // Send the saved document in the response
-       res.send(savedUser);
+       res.status(201).send(savedUser);
      });
    });
 
@@ -133,7 +133,9 @@
        //res.send(userToModify.lastName);
        req.user.save(function(err, updatedUser) {
          if (err) {
-           return next(err);
+           if(err.name = "BulkWriteError"){
+             res.status(422).send(" L'utilisateur " + req.body.firstName +" "+ req.body.lastName + " existe déjà !")
+           }
          }
          // Send the saved document in the response
          res.send(updatedUser);
