@@ -5,14 +5,18 @@
 
   /* GET users listing. */
   /**
-   * @api {get} /users/:id Request a user's information
-   * @apiName GetUser
+   * @api {get} /users/ Request all users list
+   * @apiName GetUsersList
    * @apiGroup User
    *
-   * @apiParam {Number} id Unique identifier of the user
+   * @apiDescription This route retrieves all the users stored in the database. It retrieves their role, their creation's date, the first and last name, and, if they had already directed issues, how many they directed.
    *
-   * @apiSuccess {String} firstName First name of the user
+   * @apiSuccess {String} role  Role of the user
+   * @apiSuccess {Date} createdAt User's creation date
+   * @apiSuccess {String} _id  id of the user
+   * @apiSuccess {String} firstName  First name of the user
    * @apiSuccess {String} lastName  Last name of the user
+   * @apiSuccess {Integer} directedIssuesCount  Count all the issues directed by the user
    */
    router.get('/', function(req, res, next) {
      User.find().sort('lastName').exec(function(err, users) {
@@ -64,6 +68,22 @@
      });
    });
 
+   /**
+    * @api {get} /id /users/:id Request an user's informations
+    * @apiName GetUserByID
+    * @apiGroup User
+    *
+    * @apiParam {Number} id Unique identifier of the user
+    *
+    * @apiSuccess {String} role  Role of the user
+    * @apiSuccess {Date} createdAt User's creation date
+    * @apiSuccess {String} _id  id of the user
+    * @apiSuccess {String} firstName  First name of the user
+    * @apiSuccess {String} lastName  Last name of the user
+    * @apiSuccess {Integer} directedIssuesCount  Count all the issues directed by the user
+    *
+    * @apiError (404) notFound User's id not found
+    */
    router.get('/:id', loadUserFromParams, function(req, res, next){
      res.send(req.user);
    });
