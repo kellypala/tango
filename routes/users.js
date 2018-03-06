@@ -5,14 +5,18 @@
 
   /* GET users listing. */
   /**
-   * @api {get} /users/:id Request a user's information
-   * @apiName GetUser
+   * @api {get} /users/ Request all users list
+   * @apiName GetUsersList
    * @apiGroup User
    *
-   * @apiParam {Number} id Unique identifier of the user
+   * @apiDescription This route retrieves all the users stored in the database. It retrieves their role, their creation's date, the first and last name, and, if they had already directed issues, how many they directed.
    *
-   * @apiSuccess {String} firstName First name of the user
+   * @apiSuccess {String} role  Role of the user
+   * @apiSuccess {Date} createdAt User's creation date
+   * @apiSuccess {String} _id  id of the user
+   * @apiSuccess {String} firstName  First name of the user
    * @apiSuccess {String} lastName  Last name of the user
+   * @apiSuccess {Integer} directedIssuesCount  Count all the issues directed by the user
    */
    router.get('/', function(req, res, next) {
      User.find().sort('lastName').exec(function(err, users) {
@@ -67,9 +71,54 @@
      });
    });
 
+   /**
+    * @api {get} /id /users/:id Request an user's informations
+    * @apiName GetUserByID
+    * @apiGroup User
+    *
+    * @apiParam {Number} id Unique identifier of the user
+    *
+    * @apiSuccess {String} role  Role of the user
+    * @apiSuccess {Date} createdAt User's creation date
+    * @apiSuccess {String} _id  id of the user
+    * @apiSuccess {String} firstName  First name of the user
+    * @apiSuccess {String} lastName  Last name of the user
+    * @apiSuccess {Integer} directedIssuesCount  Count all the issues directed by the user
+    *
+    * @apiError (404) notFound User's id not found
+    */
    router.get('/:id', loadUserFromParams, function(req, res, next){
      res.send(req.user);
    });
+
+
+    // Get issues from one User
+    router.get('/:id/issues', loadUserFromParams, function(req, res, next){
+        // Check existence de l'utilisateur
+        User.findById(req.params.id).exec(function(err, user) {
+            if (err) {
+              // Non existing user
+              return next(err);
+            }
+
+            // The user exists
+            let query = Issue.find(); // Query qui récupère toutes les issues
+            query = query.where('user').equals(req.params.id)
+            query.exec(function(err, issues) {
+                if (err) {
+                    return next(err);
+                }
+
+                // If there's at least an issue
+                if(typeof issues !== "undefined" && issues !== null && issues.length !== null && issues.length > 0){
+                    res.send(issues);
+                } else { // Else there's no issue
+                    res.send('there is no issue -> GERER ERREUR');
+                }
+            });
+        });
+    });
+
 
    router.put('/:id', loadUserFromParams, function(req, res, next){
        if(req.body.firstName !== undefined){
