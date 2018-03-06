@@ -97,11 +97,6 @@
     });
    });
 
-
-   function userNotFound(res, userId) {
-     return res.status(404).type('text').send(`No user found with ID ${userId}`);
-   }
-
    function loadUserFromParams(req, res, next) {
      User.findById(req.params.id).exec(function(err, user) {
        if (err) {

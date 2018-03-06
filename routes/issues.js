@@ -58,14 +58,8 @@ router.get('/', function(req, res, next) {
   });
 });
 
-router.get('/:id', function(req, res, next){
-  Issue.findById(req.params.id).exec(function(err, issues) {
-    if (err) {
-      //return console.warn('Could not count people because: ' + err.message);
-      return next(err);
-    }
-    res.send(issues);
-  });
+router.get('/:id', loadIssueFromParams, function(req, res, next){
+  res.send(req.issue);
 });
 
 /* POST new user */
@@ -88,34 +82,30 @@ router.post('/', function(req, res, next) {
     });
 });
 
-router.put('/:id', function(req, res, next){
-
-    Issue.findById(req.params.id).exec(function(err, issueToModify) {
-        if (err) {
-            //return console.warn('Could not count people because: ' + err.message);
-            return next(err);
-        }
-
+router.put('/:id', loadIssueFromParams, function(req, res, next){
         // On dit qu'il n'est pas possible de modifier le User
         if(req.body.user !== undefined){
             //issueToModify.user = req.body.user;
 
             // HANDLE THE ERROR -> impossible de changer de user
         }
+
         if(req.body.description !== undefined){
-            issueToModify.description = req.body.description;
+            req.issue.description = req.body.description;
         }
         if(req.body.imageUrl !== undefined){
-            issueToModify.imageUrl = req.body.imageUrl;
+            req.issue.imageUrl = req.body.imageUrl;
         }
+
         if(req.body.latitude !== undefined){
-            issueToModify.latitude = req.body.latitude;
+            req.issue.latitude = req.body.latitude;
         }
+
         if(req.body.longitude !== undefined){
-            issueToModify.longitude = req.body.longitude;
+            req.issue.longitude = req.body.longitude;
         }
         if(req.body.tags !== undefined){
-            issueToModify.tags = req.body.tags;
+            req.issue.tags = req.body.tags;
         }
 
         /*
@@ -154,31 +144,31 @@ router.put('/:id', function(req, res, next){
                 switch (req.body.status) {
                     case "new":
                         //------ PAS VRAIMENT UTILE CE CASE
-                        if (issueToModify.status === "inProgress" || issueToModify.status === "canceled" || issueToModify.status === "completed") {
+                        if (req.issue.status === "inProgress" || req.user.status === "canceled" || req.user.status === "completed") {
                             // HANDLE ERROR
                         } else { // Peut passer à New que si il
-                            issueToModify.status = req.body.status;
+                            req.issue.status = req.body.status;
                         }
                         break;
                     case "inProgress":
-                        if (issueToModify.status === "canceled" || issueToModify.status === "completed") {
+                        if (req.issue.status === "canceled" || req.user.status === "completed") {
                             // HANDLE ERROR
                         } else { // Peut passer à inProgress que si l'état était à New
-                            issueToModify.status = req.body.status;
+                            req.issue.status = req.body.status;
                         }
                         break;
                     case "canceled":
-                        if (issueToModify.status === "completed") {
+                        if (req.issue.status === "completed") {
                             // HANDLE ERROR
                         } else { // Peut passer en canceled que si l'état était à New ou inProgress
-                            issueToModify.status = req.body.status;
+                            req.issue.status = req.body.status;
                         }
                         break;
                     case "completed":
-                        if (issueToModify.status === "completed" || issueToModify.status === "canceled" || issueToModify.status === 'new' ) {
+                        if (req.issue.status === "completed" || req.user.status === "canceled" || req.user.status === 'new' ) {
                             // HANDLE ERROR
                         } else { // Peut passer en completed que si l'état était inProgress
-                            issueToModify.status = req.body.status;
+                            req.issue.status = req.body.status;
                         }
                         break;
                     default:
@@ -189,41 +179,32 @@ router.put('/:id', function(req, res, next){
         }
 
         // Sauvegarde de l'issue
-        issueToModify.save(function(err, savedIssue) {
+        req.issue.save(function(err, updatedIssue) {
             if (err) {
                 return next(err);
             }
             // Send the saved document in the response
-            res.send(savedIssue);
+            res.send(updatedIssue);
         });
-    });
 });
 
 
-router.delete('/:id', /*loadIssueFromParamsMiddleware,*/ function(req, res, next){
-    const issue_id = req.params.id;
-    Issue.findById(issue_id).remove().exec(function(err, issues){
-        if(err){
-            return next(err);
-        }
-        res.send("Issue " + issue_id + " deleted.");
-    });
+router.delete('/:id', loadIssueFromParams, function(req, res, next){
+  req.issue.remove(function(err){
+    if(err){
+      return next(err);
+    }
+    res.send("Issue " + req.issue.id + " deleted. ");
+  });
 });
 
-function loadIssueFromParamsMiddleware(req, res, next) {
-
-  const issueId = req.params.id;
-  if (!ObjectId.isValid(issueId)) {
-    return issueNotFound(res, issueId);
-  }
-  let query = Issue.findById(issueId)
-  query.exec(function(err, issue) {
+function loadIssueFromParams(req, res, next) {
+  Issue.findById(req.params.id).exec(function(err, issue) {
     if (err) {
       return next(err);
     } else if (!issue) {
-      return issueNotFound(res, issueId);
+      return res.status(404).send('No issue found with ID ' + req.params.id);
     }
-
     req.issue = issue;
     next();
   });
