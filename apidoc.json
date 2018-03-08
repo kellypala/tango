@@ -1,7 +1,7 @@
 {
-  "name": "My project",
+  "name": "Tango",
   "version": "1.0.0",
-  "description": "It is awesome",
-  "title": "My project",
-  "url" : "https://example.com"
+  "description": "Tango is a REST API",
+  "title": "Tango Documentation",
+  "url" : "https://comem-webserv-2018g.herokuapp.com"
 }
