@@ -224,9 +224,11 @@ router.get('/:id/issues', loadUserFromParams, function(req, res, next){
     if(typeof issues !== "undefined" && issues !== null && issues.length !== null && issues.length > 0){
       res.send(issues);
     } else { // Else there's no issue
-    res.send('there is no issue -> GERER ERREUR');
-  }
-});
+      // Nous ne renvoyons pas d'erreur, car concrètement il n'y a pas d'erreur. Nous pourrions aussi renvoyer un tableau vide et cela serait au client de le gérer.
+      res.send("This user hasn't reported any issue yet.");
+    }
+
+  });
 });
 
 /**
@@ -291,10 +293,16 @@ router.delete('/:id', loadUserFromParams, function(req, res, next){
     if(err){
       return next(err);
     }
-    res.status(200).send("User " + req.user.id + " deleted. ");
+    res.status(200).send("User " + req.user.id + " deleted.");
   });
 });
 
+/**
+ * 
+ * @param {*} req 
+ * @param {*} res 
+ * @param {*} next 
+ */
 function loadUserFromParams(req, res, next) {
   User.findById(req.params.id).exec(function(err, user) {
     if (err) {
