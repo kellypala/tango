@@ -6,6 +6,7 @@ const Issue = require('../models/issue');
 /* GET users listing. */
 /**
 * @api {get} /users/ Lister tous les utilisateurs
+* @apiVersion 1.0.0
 * @apiName GetUsersList
 * @apiGroup User
 *
@@ -83,6 +84,7 @@ router.get('/', function(req, res, next) {
 /* POST new user */
 /**
 * @api {post} /users Créer un nouvel utilisateur
+* @apiVersion 1.0.0
 * @apiName PostUser
 * @apiGroup User
 *
@@ -121,6 +123,7 @@ router.post('/', function(req, res, next) {
 
 /**
 * @api {get} /users/:id Afficher un utilisateur
+* @apiVersion 1.0.0
 * @apiName GetUserByID
 * @apiGroup User
 *
@@ -158,6 +161,7 @@ router.get('/:id', loadUserFromParams, function(req, res, next){
 // Get issues from one User
 /**
 * @api {get} /users/:id/issues Afficher les problèmes d'un utilisateur
+* @apiVersion 1.0.0
 * @apiName GetUserIssuesByID
 * @apiGroup User
 *
@@ -237,6 +241,7 @@ router.get('/:id/issues', loadUserFromParams, function(req, res, next){
 
 /**
 * @api {patch} /users/:id Modifier un ou plusieurs des attributs de l'utilisateur
+* @apiVersion 1.0.0
 * @apiName UpdateUserByID
 * @apiGroup User
 *
@@ -283,6 +288,7 @@ router.patch('/:id', loadUserFromParams, function(req, res, next){
 
 /**
 * @api {delete} /users/:id Supprimer un utilisateur
+* @apiVersion 1.0.0
 * @apiName DeleteUserByID
 * @apiGroup User
 *

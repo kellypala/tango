@@ -8,6 +8,7 @@ const possibleIssues = ['new','inProgress','canceled','completed'];
 /* GET issues listing. */
 /**
 * @api {get} /issues/ Lister toutes les issues
+* @apiVersion 1.0.0
 * @apiName GetIssuesList
 * @apiGroup Issue
 *
@@ -117,6 +118,7 @@ router.get('/', function(req, res, next) {
 
 /**
 * @api {get} /issues/:id Afficher une issue
+* @apiVersion 1.0.0
 * @apiName GetIssueByID
 * @apiGroup Issue
 *
@@ -165,6 +167,7 @@ router.get('/:id', loadIssueFromParams, function(req, res, next){
 /* POST new issue */
 /**
 * @api {post} /issues Créer une nouvelle issue
+* @apiVersion 1.0.0
 * @apiName PostIssue
 * @apiGroup Issue
 *
@@ -214,6 +217,7 @@ router.post('/', function(req, res, next) {
 
 /**
 * @api {patch} /issues/:id Modifier partiellement une issue
+* @apiVersion 1.0.0
 * @apiName UpdatePartlyIssueByID
 * @apiGroup Issue
 *
@@ -303,6 +307,7 @@ router.patch('/:id', loadIssueFromParams, function(req, res, next){
 
 /**
 * @api {delete} /issues/:id Supprimer une issue
+* @apiVersion 1.0.0
 * @apiName DeleteIssueByID
 * @apiGroup Issue
 *
