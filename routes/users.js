@@ -109,8 +109,8 @@ router.post('/', function(req, res, next) {
   // Save that document
   newUser.save(function(err, savedUser) {
     if (err) {
-      if(err.name = "BulkWriteError"){
-        res.status(403).send(" L'utilisateur " + req.body.firstName +" "+ req.body.lastName + " existe déjà !")
+      if(err.name === "BulkWriteError"){
+        res.status(403).send(" L'utilisateur " + req.body.firstName + " " + req.body.lastName + " existe déjà !")
       }
       return next(err);
     }
@@ -211,6 +211,7 @@ router.get('/:id', loadUserFromParams, function(req, res, next){
 "__v": 0
 }
 *
+* @apiError (200) OK Les issues de l'utilisateur ont été renvoyées. Si l'utilisateur n'a pas d'issues, l'API renverra "This user hasn't reported any issue yet."
 * @apiError (404) notFound Utilisateur non trouvé.
 * @apiError (422) unprocessableEntity L’entité fournie avec la requête est incompréhensible ou incomplète.
 */
@@ -235,7 +236,7 @@ router.get('/:id/issues', loadUserFromParams, function(req, res, next){
 });
 
 /**
-* @api {put} /users/:id Modifier un utilisateur
+* @api {patch} /users/:id Modifier un ou plusieurs des attributs de l'utilisateur
 * @apiName UpdateUserByID
 * @apiGroup User
 *
@@ -258,7 +259,7 @@ router.get('/:id/issues', loadUserFromParams, function(req, res, next){
 * @apiError (422) unprocessableEntity L’entité fournie avec la requête est incompréhensible ou incomplète.
 * @apiError (403) forbidden L’entité fournie avec la requête n'est pas acceptée, car il existe déjà un utilisateur avec ce nom et ce prénom.
 */
-router.put('/:id', loadUserFromParams, function(req, res, next){
+router.patch('/:id', loadUserFromParams, function(req, res, next){
   if(req.body.firstName !== undefined){
     req.user.firstName = req.body.firstName;
   }
@@ -302,7 +303,7 @@ router.delete('/:id', loadUserFromParams, function(req, res, next){
     if(err){
       return next(err);
     }
-    res.status(200).send("User " + req.user.id + " deleted.");
+    res.status(200).send("User " + req.user.id + "has been deleted.");
   });
 });
 

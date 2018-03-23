@@ -3,6 +3,8 @@ var router = express.Router();
 const Issue = require('../models/issue');
 const User = require('../models/user');
 
+const possibleIssues = ['new','inProgress','canceled','completed'];
+
 /* GET issues listing. */
 /**
 * @api {get} /issues/ Lister toutes les issues
@@ -10,6 +12,12 @@ const User = require('../models/user');
 * @apiGroup Issue
 *
 * @apiDescription Cette route retourne toutes issues stockées dans la base de donnée. Pour chaque issue, on reçoit son id, son statut, sa date de création, sa date de modification (dernière en date), sa latitude, sa longitude, l'id du User ayant reporté l'issue, sa description (si existante), l'url de l'image illustrant l'issue (si existante), le(s) tag(s) (si existant(s)).
+* <br/><br/>
+* Il est également possible de filtrer les issues selon leur statut.
+*
+* @apiParam (URL Parameters) {String="new","inProgress","canceled","completed"} status Le statut de l'issue.
+* @apiParamExample {uri} HTTP Filter Request Example:
+* http://comem-webserv-2018g.herokuapp.com/issues?status=new
 *
 * @apiSuccess {String} status  Le statut de l'issue. Les différents statuts sont: "new", "inProgress", "canceled", "completed".
 * @apiSuccess {Date} createdAt  La date de création de l'issue
@@ -69,10 +77,9 @@ router.get('/', function(req, res, next) {
     let query = Issue.find().sort('status');
 
     // Filter issues by status
-    let statusList = ['new', 'inProgress', 'canceled', 'completed'];
-      if (statusList.includes(req.query.status)) {
-        query = query.where('status').equals(req.query.status);
-      }
+    if (possibleIssues.includes(req.query.status)) {
+    query = query.where('status').equals(req.query.status);
+    }
 
     // Parse the "page" param (default to 1 if invalid)
     let page = parseInt(req.query.page,10);
@@ -163,7 +170,6 @@ router.get('/:id', loadIssueFromParams, function(req, res, next){
 *
 * @apiDescription Cette route permet de créer une nouvelle issue. Il faut obligatoirement y indiquer l'id d'un User, une latitude, une longitude. Il est aussi possible d'indiquer un statut (si non indiqué, sera "new" par défaut), une description, une url de l'image montrant l'issue en question, des tags afin de catégoriser l'issue.
 *
-* @apiParam (Request body) {String="new","inProgress","canceled","completed"} [status]  Le statut de l'issue, par défaut "new"
 * @apiParam (Request body) {String} user  L'id du User souhaitant reporter l'issue
 * @apiParam (Request body) {String{..1000}} [description]  La description de l'issue
 * @apiParam (Request body) {String[]} [tags]  Le tableau de tag(s) de l'issue
@@ -183,16 +189,13 @@ router.get('/:id', loadIssueFromParams, function(req, res, next){
 }
 *
 * @apiError (201) created L'issue a été créée avec succès.
+* @apiError (422) validatorError Un des champs ne respecte pas les contraintes.
 */
 router.post('/', function(req, res, next) {
     // Create a new document from the JSON in the request body
     const newIssue = new Issue(req.body);
 
-    // Si l'issue a été uploadée avec un autre état que New
-    // Choix de conception de notre part
-    if(newIssue.status !== 'new'){
-        newIssue.status = 'new'; // Set New as the status
-    }
+    // Dont forget, the status is automatically set to 'new' due to our model.
 
     // Save that document
     newIssue.save(function(err, savedIssue) {
@@ -227,9 +230,6 @@ router.post('/', function(req, res, next) {
 *
 *@apiParamExample {json} Body Request Example:
 {
-    "description": "Cette vitre est cassée ET a laissé des débris sur la route."
-},
-{
 	"status": "canceled",
 	
 	"latitude": "25",
@@ -239,13 +239,10 @@ router.post('/', function(req, res, next) {
 	"description": "Un arbre est tombé sur la route!!",
 	"imageUrl": "img/arbreRoute.jpeg",
 	"tags": ["arbre","circulation","route"]
-},
-{
-	"status": "inProgress",	
 }
 *
 * @apiError (200) OK L'issue a été modifiée avec succès.
-* @apiError (400) badRequest Impossible de modifier l'issue d'une au non respect d'une contrainte
+* @apiError (400) badRequest Impossible de modifier l'issue dû au non-respect d'une contrainte
 * @apiError (404) notFound Issue non trouvée.
 * @apiError (422) unprocessableEntity L’entité fournie avec la requête est incompréhensible ou incomplète.
 */
@@ -256,7 +253,11 @@ router.patch('/:id', loadIssueFromParams, function(req, res, next){
         if(allowStatusChanges(req)){ // Si nous pouvons changer le status
             req.issue.status = req.body.status;
         } else { // S'il n'est pas possible de changer le status
-            res.status(400).send('Impossible for the status to go from "' + req.issue.status + '" to "' + req.body.status + '"');
+            if(!possibleIssues.includes(req.body.status)){ // Si le statut demandé n'est pas repertorié dans le tableau d'Issue
+                res.status(422).send('The status "' + req.body.status + '" doesn\'t exist');
+            } else { // Si le statut demandé ne respecte pas les contraintes de changement de statut
+                res.status(400).send('Impossible for the status to go from "' + req.issue.status + '" to "' + req.body.status + '"');
+            }
             return next();
         }
     }
@@ -315,7 +316,7 @@ router.delete('/:id', loadIssueFromParams, function(req, res, next){
     if(err){
       return next(err);
     }
-    res.status(200).send("The issue " + req.issue.id + "is deleted.");
+    res.status(200).send("The issue " + req.issue.id + " has been deleted.");
   });
 });
 
@@ -330,7 +331,9 @@ router.delete('/:id', loadIssueFromParams, function(req, res, next){
 function loadIssueFromParams(req, res, next) {
   Issue.findById(req.params.id).exec(function(err, issue) {
     if (err) {
-      return next(err);
+        if(err.name = "CastError"){
+            return res.status(422).send("L'id n'a pas un format correct.");
+        }
     } else if (!issue) {
       return res.status(404).send('No issue found with ID ' + req.params.id);
     }
