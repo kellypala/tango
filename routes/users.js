@@ -299,7 +299,9 @@ router.delete('/:id', loadUserFromParams, function(req, res, next){
 
 /**
  * 
- * @param {*} req 
+ * This function will load the issue corresponding to the id recieved.
+ * 
+ * @param {*} req The object sent to the API
  * @param {*} res 
  * @param {*} next 
  */

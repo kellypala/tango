@@ -197,7 +197,12 @@ router.post('/', function(req, res, next) {
     // Save that document
     newIssue.save(function(err, savedIssue) {
         if (err) {
-            return next(err);
+            if(err.name='validatorError'){ // Si c'est une erreur de validation
+                res.status(422).send(err.message);
+            } else { // Si c'est une erreur d'un autre type
+                res.send(err);
+                return next();
+            }
         }
         // Send the saved document in the response
         res.status(200).send(savedIssue);
@@ -213,13 +218,13 @@ router.post('/', function(req, res, next) {
 *
 * @apiDescription Cette route permet de modifier une issue, identifiée par son id. On peut modifier soit un, soit plusieurs des attributs de l'issue.
 *
-* @apiParam (Request body) {String="new","inProgress","canceled","completed"} [status]  Le statut de l'issue, par défaut "new"
-* @apiParam (Request body) {String} [user]  L'id du User ayant reporté l'issue
-* @apiParam (Request body) {String{..1000}} [description]  La description de l'issue
+* @apiParam (Request body) {String="new","inProgress","canceled","completed"} status  Le statut de l'issue, par défaut "new"
+* @apiParam (Request body) {String} user  L'id du User ayant reporté l'issue
+* @apiParam (Request body) {String{..1000}} description  La description de l'issue
 * @apiParam (Request body) {String[]} [tags]  Le tableau de tag(s) de l'issue
-* @apiParam (Request body) {String{..500}} [imageUrl]  L'url de l'image illustrant l'issue
-* @apiParam (Request body) {Integer} [latitude]  La latitude de l'endroit où se situe l'issue
-* @apiParam (Request body) {Integer} [longitude]  La longitude de l'endroit où se situe l'issue
+* @apiParam (Request body) {String{..500}} imageUrl  L'url de l'image illustrant l'issue
+* @apiParam (Request body) {Integer} latitude  La latitude de l'endroit où se situe l'issue
+* @apiParam (Request body) {Integer} longitude  La longitude de l'endroit où se situe l'issue
 *
 *@apiParamExample {json} Body Request Example:
 {
@@ -289,7 +294,7 @@ router.put('/:id', loadIssueFromParams, loadUserFromParams, function(req, res, n
         if (err) {
             if(err.name='validatorError'){ // Si c'est une erreur de validation
                 res.status(422).send(err.message);
-            } else { // Si c'est une erreur d'un autr type
+            } else { // Si c'est une erreur d'un autre type
                 res.send(err);
                 return next();
             }
@@ -309,7 +314,6 @@ router.put('/:id', loadIssueFromParams, loadUserFromParams, function(req, res, n
 *
 * @apiError (200) OK Issue supprimée.
 * @apiError (404) notFound Issue non trouvée.
-* @apiError (422) unprocessableEntity L’entité fournie avec la requête est incompréhensible ou incomplète.
 */
 router.delete('/:id', loadIssueFromParams, function(req, res, next){
   req.issue.remove(function(err){
@@ -322,7 +326,9 @@ router.delete('/:id', loadIssueFromParams, function(req, res, next){
 
 /**
  * 
- * @param {*} req 
+ * This function will load the issue corresponding to the id recieved.
+ * 
+ * @param {*} req The object sent to the API
  * @param {*} res 
  * @param {*} next 
  */
@@ -340,7 +346,13 @@ function loadIssueFromParams(req, res, next) {
 
 /**
  * 
- * @param {*} req 
+ * This function will check if it's possible for the status to be changed. It will check constraints we setted:
+ * - Impossible to go from "new" to "completed"
+ * - Impossible to go from "inProgress" to "new"
+ * - Impossible to change the status when it's "completed" or "canceled"
+ * - Possibilities: new -> inProgress, canceled | inProgress -> completed, canceled
+ * 
+ * @param {*} req The object sent to our API
  */
 function allowStatusChanges(req){
     const askedStatus = req.body.status;
@@ -363,7 +375,7 @@ function allowStatusChanges(req){
     }
 }
 
-// Faudrait qu'on fasse un middleware parce que c'est un copié collé de fonction
+// Faudrait qu'on fasse un middleware parce que c'est un copié collé de fonction??
 function loadUserFromParams(req, res, next) {
     User.findById(req.body.user).exec(function(err, user) {
       if (err) {

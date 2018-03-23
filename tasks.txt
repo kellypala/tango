@@ -22,12 +22,12 @@ NOUS EN PLUS:
 <<<< DONE - Personnalize error messages
 <<<< DONE - Commenter le code
 <<<< DONE - Pagination
-- Faire les middleware
+- Faire les middleware ??
 
 
 -> On peut poster une issue copiée collée, même data mot pour mot ?
 -> Améliorer le check de l'existance du User depuis la route Issue
--> Check les erreurs de validations dans le post Issue
--> Dans le put, ne laisser aucun champ en optionnel dans la doc
+√√√√√√ Check les erreurs de validations dans le post Issue
+-> Dans le put, ne laisser aucun champ en optionnel dans la doc ?
 -> Décrire rapidement les fonctions
 -> Push le projet sur Heroku
