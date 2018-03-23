@@ -1,3 +1,4 @@
+<<<<<<< current
 ﻿TANGO API - TODO
 
 ÉNONCÉ:
@@ -23,3 +24,38 @@ NOUS EN PLUS:
 - Commenter le code
 *In Progress - Pagination
 - Faire les middleware
+=======
+﻿TANGO API - TODO
+
+ÉNONCÉ:
+
+<<<< DONE - Create a user
+<<<< DONE - Retrieve a user
+     On peut implémenter, en bonus, retrieve par nom une liste si y'a plusieurs personnes avec ce nom, ou par prénom, à voir?
+<<<< DONE - Optional: Retrieve the list of users
+<<<< DONE - Bonus: the response indicates how many issues each user has created (using aggregation)
+<<<< DONE - Update a user (fully or partially)
+<<<< DONE - In progress - Create an issue
+<<<< DONE - The issue must belong to one user
+<<<< DONE - Retrieve an issue
+<<<< DONE - Retrieve the list of issues
+<<<< DONE - The client must also be able to retrieve the list of issues that belong to a specific user
+<<<< DONE - Bonus: the list is paginated
+- Bonus: there is at least 1 filter
+<<<< DONE - Update an issue (fully or partially)
+<<<< DONE - Delete an issue
+
+NOUS EN PLUS:
+<<<< DONE - Personnalize error messages
+<<<< DONE - Commenter le code
+<<<< DONE - Pagination
+- Faire les middleware
+
+
+-> On peut poster une issue copiée collée, même data mot pour mot ?
+-> Améliorer le check de l'existance du User depuis la route Issue
+-> Check les erreurs de validations dans le post Issue
+-> Dans le put, ne laisser aucun champ en optionnel dans la doc
+-> Décrire rapidement les fonctions
+-> Push le projet sur Heroku
+>>>>>>> before discard
