@@ -210,51 +210,46 @@ router.post('/', function(req, res, next) {
 });
 
 /**
-* @api {put} /issues/:id Modifier une issue
-* @apiName UpdateIssueByID
+* @api {patch} /issues/:id Modifier partiellement une issue
+* @apiName UpdatePartlyIssueByID
 * @apiGroup Issue
 *
 * @apiParam {Number} id Identifiant unique pour chaque issue
 *
-* @apiDescription Cette route permet de modifier une issue, identifiée par son id. On peut modifier soit un, soit plusieurs des attributs de l'issue.
+* @apiDescription Cette route permet de modifier une issue, identifiée par son id. On peut modifier soit un, soit plusieurs des attributs de l'issue. Il est impossible de modifier l'auteur d'une issue.
 *
-* @apiParam (Request body) {String="new","inProgress","canceled","completed"} status  Le statut de l'issue, par défaut "new"
-* @apiParam (Request body) {String} user  L'id du User ayant reporté l'issue
-* @apiParam (Request body) {String{..1000}} description  La description de l'issue
+* @apiParam (Request body) {String="new","inProgress","canceled","completed"} [status]  Le statut de l'issue
+* @apiParam (Request body) {String{..1000}} [description]  La description de l'issue
 * @apiParam (Request body) {String[]} [tags]  Le tableau de tag(s) de l'issue
-* @apiParam (Request body) {String{..500}} imageUrl  L'url de l'image illustrant l'issue
-* @apiParam (Request body) {Integer} latitude  La latitude de l'endroit où se situe l'issue
-* @apiParam (Request body) {Integer} longitude  La longitude de l'endroit où se situe l'issue
+* @apiParam (Request body) {String{..500}} [imageUrl]  L'url de l'image illustrant l'issue
+* @apiParam (Request body) {Integer} [latitude]  La latitude de l'endroit où se situe l'issue
+* @apiParam (Request body) {Integer} [longitude]  La longitude de l'endroit où se situe l'issue
 *
 *@apiParamExample {json} Body Request Example:
 {
-"role":"citizen"
+    "description": "Cette vitre est cassée ET a laissé des débris sur la route."
+},
+{
+	"status": "canceled",
+	
+	"latitude": "25",
+	"longitude": "25",
+	"user": "5a9e91a72cd05e805032d18f",
+	
+	"description": "Un arbre est tombé sur la route!!",
+	"imageUrl": "img/arbreRoute.jpeg",
+	"tags": ["arbre","circulation","route"]
+},
+{
+	"status": "inProgress",	
 }
+*
 * @apiError (200) OK L'issue a été modifiée avec succès.
 * @apiError (400) badRequest Impossible de modifier l'issue d'une au non respect d'une contrainte
 * @apiError (404) notFound Issue non trouvée.
 * @apiError (422) unprocessableEntity L’entité fournie avec la requête est incompréhensible ou incomplète.
 */
-router.put('/:id', loadIssueFromParams, loadUserFromParams, function(req, res, next){
-
-    // Comme c'est un put, il faut modifier tout les champs, donc recevoir tous les champs pour les modifiers
-    if(
-        req.body.user === undefined
-        || req.body.status === undefined
-        || req.body.description === undefined
-        || req.body.imageUrl === undefined
-        || req.body.latitude === undefined
-        || req.body.longitude === undefined
-        || req.body.tags === undefined
-    ){
-        res.status(422).send('ALL the fields of the issue must be filled and sent.');
-        return next();
-    }
-
-    // Si le changement de user est souhaité
-    if(req.body.user !== undefined){
-        req.issue.user = req.body.user;
-    }
+router.patch('/:id', loadIssueFromParams, function(req, res, next){
 
     // Si le changement de status est souhaité
     if(req.body.status !== undefined){
@@ -373,21 +368,6 @@ function allowStatusChanges(req){
             }
         }
     }
-}
-
-// Faudrait qu'on fasse un middleware parce que c'est un copié collé de fonction??
-function loadUserFromParams(req, res, next) {
-    User.findById(req.body.user).exec(function(err, user) {
-      if (err) {
-        if(err.name = "CastError"){
-          return res.status(422).send("L'id du User n'a pas un format correct.");
-        }
-      } else if (!user) {
-        return res.status(404).send('Aucun User avec l\'id ' + req.params.id + " trouvé.");
-      }
-      req.user = user;
-      next();
-    });
 }
 
 module.exports = router;
