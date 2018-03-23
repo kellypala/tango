@@ -162,6 +162,9 @@ router.get('/:id', loadUserFromParams, function(req, res, next){
 * @apiGroup User
 *
 * @apiParam {Number} id Identifiant unique pour chaque utilisateur
+* @apiParamExample {String} Example id:
+"5aa1216fde3cb40014969c61"
+*
 *
 * @apiDescription Cette route retourne tous les problèmes reportés par l'utilisateur, identifié par son id.
 *
@@ -235,6 +238,9 @@ router.get('/:id/issues', loadUserFromParams, function(req, res, next){
 * @apiGroup User
 *
 * @apiParam {Number} id Identifiant unique pour chaque utilisateur
+* @apiParamExample {String} Example id:
+"5aa1216fde3cb40014969c61"
+*
 *
 * @apiDescription Cette route permet de modifier un utilisateur, identifié par son id. On peut modifier soit un, soit plusieurs des attributs de l'utilisateur.
 *
@@ -278,6 +284,9 @@ router.put('/:id', loadUserFromParams, function(req, res, next){
 * @apiGroup User
 *
 * @apiParam {Number} id Identifiant unique pour chaque utilisateur
+* @apiParamExample {String} Example id:
+"5aa1216fde3cb40014969c61"
+*
 *
 * @apiDescription Cette route supprime l'utilisateur, identifié par son id.
 *

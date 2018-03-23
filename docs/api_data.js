@@ -1,5 +1,184 @@
 define({ "api": [
   {
+    "type": "get",
+    "url": "/issues/",
+    "title": "Lister tous les problèmes",
+    "name": "GetIssuesList",
+    "group": "Issue",
+    "description": "<p>Cette route retourne tous les problèmes stockés dans la base de donnée. Pour chaque problème, on reçoit son statut, ses tags, sa latitude, sa longitude, l'id de l'utilisateur qui l'a reporté, sa date de création ainsi que sa date de dernière modification. Il y a un système de pagination, qui décrit sur quel page on est, le nombre de problèmes par page ainsi que le nombre total de problèmes.</p>",
+    "success": {
+      "fields": {
+        "Success 200": [
+          {
+            "group": "Success 200",
+            "type": "Number",
+            "optional": false,
+            "field": "page",
+            "description": "<p>La page sur laquelle on se trouve</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "Number",
+            "optional": false,
+            "field": "pageSize",
+            "description": "<p>Le nombre de problèmes par page</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "Number",
+            "optional": false,
+            "field": "total",
+            "description": "<p>Le nombre total de problèmes</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "status",
+            "description": "<p>L'état du problème.</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "Array",
+            "optional": false,
+            "field": "tags",
+            "description": "<p>Tableau de Strings décrivants le problème.</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "_id",
+            "description": "<p>L'identifiant du problème.</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "Number",
+            "optional": false,
+            "field": "latitude",
+            "description": "<p>La latitude où se trouve le problème.</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "Number",
+            "optional": false,
+            "field": "longitude",
+            "description": "<p>La longitude où se trouve le problème.</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "user",
+            "description": "<p>L'identifiant de l'utulisateur qui a reporté le problème.</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "Date",
+            "optional": false,
+            "field": "createdAt",
+            "description": "<p>La date du report du problème.</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "Date",
+            "optional": false,
+            "field": "updatedAt",
+            "description": "<p>La date de la dernière mise à jour du problème.</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Success-Response:",
+          "content": "{\n\"page\": 1,\n\"pageSize\": 10,\n\"total\": 3,\n\"data\": [\n{\n\"status\": \"new\",\n\"tags\": [],\n\"_id\": \"5aa131dbde3cb40014969c66\",\n\"latitude\": 1,\n\"longitude\": 10,\n\"user\": \"5aa1216fde3cb40014969c61\",\n\"createdAt\": \"2018-03-08T12:51:39.198Z\",\n\"updatedAt\": \"2018-03-08T12:51:39.198Z\",\n\"__v\": 0\n},\n{\n\"status\": \"new\",\n\"tags\": [],\n\"_id\": \"5aa131eade3cb40014969c67\",\n\"latitude\": 1,\n\"longitude\": 3,\n\"user\": \"5aa1216fde3cb40014969c61\",\n\"createdAt\": \"2018-03-08T12:51:54.269Z\",\n\"updatedAt\": \"2018-03-08T12:51:54.269Z\",\n\"__v\": 0\n},\n{\n\"status\": \"new\",\n\"tags\": [],\n\"_id\": \"5aa13218de3cb40014969c68\",\n\"latitude\": 1,\n\"longitude\": 3,\n\"user\": \"5aa1216fde3cb40014969c61\",\n\"createdAt\": \"2018-03-08T12:52:40.470Z\",\n\"updatedAt\": \"2018-03-08T12:52:40.470Z\",\n\"__v\": 0\n}\n]\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "version": "0.0.0",
+    "filename": "routes/issues.js",
+    "groupTitle": "Issue"
+  },
+  {
+    "type": "post",
+    "url": "/issues",
+    "title": "Créer un nouveau problème",
+    "name": "PostIssue",
+    "group": "Issue",
+    "description": "<p>Cette route permet de créer un nouveau problème, il faut indiquer sa latitude, sa longitude, des tags à son propos (accident, cassé, ...) et par quel user il a été reporté. On peut également fournir une description et l'url d'une image.</p>",
+    "parameter": {
+      "fields": {
+        "Request body": [
+          {
+            "group": "Request body",
+            "type": "Number",
+            "optional": false,
+            "field": "latitude",
+            "description": "<p>La latitude où se trouve le problème.</p>"
+          },
+          {
+            "group": "Request body",
+            "type": "Number",
+            "optional": false,
+            "field": "longitude",
+            "description": "<p>La longitude où se trouve le problème.</p>"
+          },
+          {
+            "group": "Request body",
+            "type": "Array",
+            "optional": false,
+            "field": "tags",
+            "description": "<p>Tableau de Strings décrivants le problème.</p>"
+          },
+          {
+            "group": "Request body",
+            "type": "String",
+            "optional": false,
+            "field": "user",
+            "description": "<p>L'identifiant de l'utulisateur qui a reporté le problème.</p>"
+          },
+          {
+            "group": "Request body",
+            "type": "String",
+            "optional": true,
+            "field": "description",
+            "description": "<p>Une description du problème.</p>"
+          },
+          {
+            "group": "Request body",
+            "type": "URL",
+            "optional": true,
+            "field": "imageUrl",
+            "description": "<p>Une photo du problème.</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Body Request Example:",
+          "content": "{\n  \"latitude\" : 13,\n  \"longitude\" : 34,\n  \"tags\" : [\"accident\", \"lampadaire\"],\n  \"user\": \"5aa1216fde3cb40014969c61\",\n  \"description\" : \"Une voiture est entrée dans le lampadaire et il s'est tordu.\"\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "error": {
+      "fields": {
+        "201": [
+          {
+            "group": "201",
+            "optional": false,
+            "field": "created",
+            "description": "<p>Le problème a été créé avec succès.</p>"
+          }
+        ]
+      }
+    },
+    "version": "0.0.0",
+    "filename": "routes/issues.js",
+    "groupTitle": "Issue"
+  },
+  {
     "type": "delete",
     "url": "/users/:id",
     "title": "Supprimer un utilisateur",
@@ -16,7 +195,14 @@ define({ "api": [
             "description": "<p>Identifiant unique pour chaque utilisateur</p>"
           }
         ]
-      }
+      },
+      "examples": [
+        {
+          "title": "Example id:",
+          "content": "\"5aa1216fde3cb40014969c61\"",
+          "type": "String"
+        }
+      ]
     },
     "description": "<p>Cette route supprime l'utilisateur, identifié par son id.</p>",
     "error": {
@@ -174,7 +360,14 @@ define({ "api": [
             "description": "<p>Identifiant unique pour chaque utilisateur</p>"
           }
         ]
-      }
+      },
+      "examples": [
+        {
+          "title": "Example id:",
+          "content": "\"5aa1216fde3cb40014969c61\"",
+          "type": "String"
+        }
+      ]
     },
     "description": "<p>Cette route retourne tous les problèmes reportés par l'utilisateur, identifié par son id.</p>",
     "success": {
@@ -455,6 +648,11 @@ define({ "api": [
         ]
       },
       "examples": [
+        {
+          "title": "Example id:",
+          "content": "\"5aa1216fde3cb40014969c61\"",
+          "type": "String"
+        },
         {
           "title": "Body Request Example:",
           "content": "{\n\"role\":\"citizen\"\n}",
